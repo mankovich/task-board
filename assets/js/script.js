@@ -1,24 +1,15 @@
-// Retrieve tasks and nextId from localStorage
 let taskList = JSON.parse(localStorage.getItem("tasks"));
 let nextId = JSON.parse(localStorage.getItem("nextId"));
-const addTaskButton = document.getElementById('addTaskButton');
+const addTaskButton = document.getElementById('#addTaskButton');
 const taskModal = document.getElementById('taskModal');
-const saveTaskButton = document.getElementById('saveTaskButton');
-const closeButton = document.querySelector('.close')
+const saveTaskButton = document.getElementById('#save-button');
+const closeButtonX = document.querySelector('.close')
+const closeButton = document.getElementById('#close-button')
+const taskTitleEl = getElementById('#inputTaskTitle')
+const taskDescrEl = getElementById('#inputTaskDescription')
+const taskDueDateEl = getElementById('#inputDueDate')
 
-//  create a function to generate a unique task id
-// function generateTaskId() {
-//     const taskId = {
-//         id: crypto.randomUUID(),
-//         title: taskTitle,
-//         description: taskDescr,
-//         dueDate: taskDueDate,
-//         status: 'to-do'
-//     }
-//     return taskId
-// }
 
-// TODO: create a function to create a task card...Mini 37-71
 function createTaskCard(task) {
     const taskCard = $('<div>')
         .addClass('card task-card draggable my-3')
@@ -51,7 +42,6 @@ function createTaskCard(task) {
     return taskCard;
 }
 
-// create a function to render the task list and make cards draggable...Mini 73-113
 function readTasksFromStorage() {
     if (!taskList) {
         taskList = [];
@@ -74,7 +64,7 @@ function renderTaskList() {
         }
     }
     
-    $('draggable').draggable({
+    $('.draggable').draggable({
         opacity: 0.7,
         zIndex: 100,
         helper: function(e) {
@@ -88,14 +78,12 @@ function renderTaskList() {
     });
 }
 
-// create a function to handle adding a new task...Mini 135-165
 function handleAddTask(event){
     event.preventDefault();
 
-    const taskTitle = $('#taskTitle').val().trim();
-    const taskDescr = $('#taskDescription').val().trim();
-    const taskDueDate = $('taskDueDate').val();
-
+    const taskTitle = taskTitleEl.val().trim();
+    const taskDescr = taskDescrEl.val().trim();
+    const taskDueDate = taskDueDateEl.val();
     
     const newTask = {
         id: crypto.randomUUID(),
@@ -111,12 +99,11 @@ function handleAddTask(event){
     saveTaskstoStorage(tasks);
     renderTaskList();
 
-    $('#taskTitle').val('');
-    $('#taskDescription').val('');
-    $('taskDueDate').val('');
+    taskTitleEl.val('');
+    taskDescrEl.val('');
+    taskDueDateEl.val('');
 }
 
-// create a function to handle deleting a task...see Mini ln 116-132
 function handleDeleteTask(event){
     const taskId = $(this).attr('data-task-id');
     const tasks = readTasksFromStorage();
@@ -132,7 +119,6 @@ function handleDeleteTask(event){
     renderTaskList();
 }
 
-//  create a function to handle dropping a task into a new status lane...Mini 168-187
 function handleDrop(event, ui) {
     const tasks = readTasksFromStorage();
     const taskId = ui.draggable[0].dataset.taskId;
@@ -148,13 +134,30 @@ function handleDrop(event, ui) {
     renderTaskList();
 }
 
-// TODO: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker...Mini 189-190, 194, 197-198, 201-215
-saveTaskButton.on('click', handleAddTask)
+saveTaskButton.addEventListener('click', handleAddTask);
+
+addTaskButton.addEventListener('click', () => {
+    taskModal.style.display = 'block';
+})
+
+closeButton.addEventListener('click', () => {
+    taskModal.style.display = 'none';
+})
+
+closeButtonX.addEventListener('click', () => {
+    taskModal.style.display = 'none';
+})
 
 $(document).ready(function () {
     renderTaskList();
-    addTaskButton.addEventListener('click', () => {
-        taskModal.style.display = 'block';
-    })
+    
+    $('#inputDueDate').datepicker({
+        changeMonth: true,
+        changeYear: true,
+    });
 
+    $('.lane').droppable({
+        accept: '.draggable',
+        drop: handleDrop,
+    });
 });

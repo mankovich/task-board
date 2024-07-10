@@ -23,14 +23,26 @@
   <div class="container">
     <div class="text-center mb-5">
       <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#formModal" id="addTaskButton">Add Task</button>
-    </div>
-    <div id="formModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <input type="text" id="taskTitle" placeholder="Task Title">
-        <textarea id="taskDescription" placeholder="Description of Task"></textarea>
-        <input type="date" id="taskDueDate">
-        <button id="saveTaskButton">Save Task</button>
+    </div> 
+    <div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="taskModal" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="newTaskHeader">Add New Task</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body row justify-content-center m-2">
+            <input type="text" class="mb-2" id="inputTaskTitle" placeholder="Task Title">
+            <textarea id="inputTaskDescription" class="mb-2" placeholder="Description of Task"></textarea>
+            <input type="date" id="inputDueDate">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="close-button" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-secondary" id="save-button">Save changes</button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="row swim-lanes text-center justify-content-between">
