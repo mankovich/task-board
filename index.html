@@ -22,26 +22,25 @@
   </header>
   <div class="container">
     <div class="text-center mb-5">
-      <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#formModal" id="addTaskButton">Add Task</button>
+      <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#task-modal" id="add-task-btn">Add Task</button>
     </div> 
-    <div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="taskModal" aria-hidden="true">
+    <div class="modal fade" id="task-modal" tabindex="-1" role="dialog" aria-labelledby="task-modal" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="newTaskHeader">Add New Task</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body row justify-content-center m-2">
-            <input type="text" class="mb-2" id="inputTaskTitle" placeholder="Task Title">
-            <textarea id="inputTaskDescription" class="mb-2" placeholder="Description of Task"></textarea>
-            <input type="date" id="inputDueDate">
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" id="close-button" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-secondary" id="save-button">Save changes</button>
-          </div>
+          <form id="taskForm">
+            <div class="modal-header">
+              <h5 class="modal-title" id="new-task-header">Add New Task</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row justify-content-center m-2">
+              <input type="text" class="mb-2" id="input-task-title" placeholder="Task Title">
+              <textarea id="input-description" class="mb-2" placeholder="Description of Task"></textarea>
+              <input type="date" id="input-due-date">
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-secondary" id="save-btn" data-bs-toggle="modal" data-bs-target="#task-modal">Save changes</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -87,7 +86,7 @@
   <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
     integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U=" crossorigin="anonymous"></script>
 
-  <!-- <script src="./assets/js/script.js"></script> -->
+  <script src="./assets/js/script.js"></script>
 </body>
 
 </html>

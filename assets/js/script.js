@@ -1,13 +1,14 @@
-let taskList = JSON.parse(localStorage.getItem("tasks"));
-let nextId = JSON.parse(localStorage.getItem("nextId"));
-const addTaskButton = document.getElementById('#addTaskButton');
-const taskModal = document.getElementById('taskModal');
-const saveTaskButton = document.getElementById('#save-button');
-const closeButtonX = document.querySelector('.close')
-const closeButton = document.getElementById('#close-button')
-const taskTitleEl = getElementById('#inputTaskTitle')
-const taskDescrEl = getElementById('#inputTaskDescription')
-const taskDueDateEl = getElementById('#inputDueDate')
+// let nextId = JSON.parse(localStorage.getItem("nextId"));
+const addTaskBtn = $('#add-task-btn');
+const taskModal = $('#task-modal')
+const modalHeader = $('.modal-header');
+const modalFooter = $('.modal-footer')
+const saveTaskBtn = $('#save-btn');
+const closeBtnX = $('#x-close-btn')
+const closeBtn = $('#close-btn')
+const taskTitleInputEl = $('#input-task-title')
+const taskDescrInputEl = $('#input-description')
+const taskDueDateInputEl = $('#input-due-date')
 
 
 function createTaskCard(task) {
@@ -26,7 +27,7 @@ function createTaskCard(task) {
 
     if (task.dueDate && task.status !== 'done') {
         const now = dayjs();
-        const taskDueDate = dayjs(task.dueDate, 'DD/MM/YYYY');
+        const taskDueDate = dayjs(task.dueDate, 'YYYY/MM/DD');
 
         if(now.isSame(taskDueDate, 'day')) {
             taskCard.addClass('bg-warning text-white');
@@ -43,23 +44,36 @@ function createTaskCard(task) {
 }
 
 function readTasksFromStorage() {
-    if (!taskList) {
-        taskList = [];
+    let tasks = JSON.parse(localStorage.getItem('tasks'))
+    
+    if (!tasks) {
+        tasks = [];
     }
-    return taskList;
+    return tasks;
 }
 
-function renderTaskList() {
+function saveTasksToStorage(tasks) {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+function renderTasks() {
     const tasks = readTasksFromStorage();
+    
     const toDoList = $('#todo-cards');
     toDoList.empty();
+
+    const inProgressList = $('#in-progress-cards');
+    inProgressList.empty();
+
+    const doneList = $('#done-cards');
+    doneList.empty();
 
     for (let task of tasks) {
         if (task.status === 'to-do') {
             toDoList.append(createTaskCard(task));
-        } else if (project.status === 'in-progress') {
+        } else if (task.status === 'in-progress') {
             inProgressList.append(createTaskCard(task));
-        } else if (project.status === 'done') {
+        } else if (task.status === 'done') {
             doneList.append(createTaskCard(task));
         }
     }
@@ -67,62 +81,65 @@ function renderTaskList() {
     $('.draggable').draggable({
         opacity: 0.7,
         zIndex: 100,
+        
         helper: function(e) {
             const original = $(e.target).hasClass('ui-draggable')
-            ? $(e.target)
+            ? $(e.target) 
             : $(e.target).closest('.ui-draggable');
             return original.clone().css({
-                width: original.outerwidth(),
+                width: original.outerWidth(),
             });
         },
     });
 }
 
-function handleAddTask(event){
-    event.preventDefault();
+function handleTaskSubmit(event) {
+    event.preventDefault()
 
-    const taskTitle = taskTitleEl.val().trim();
-    const taskDescr = taskDescrEl.val().trim();
-    const taskDueDate = taskDueDateEl.val();
-    
+    const taskTitle = taskTitleInputEl.val().trim();
+    const taskDescr = taskDescrInputEl.val().trim();
+    const taskDueDate = taskDueDateInputEl.val();
+    const newTaskId =  crypto.randomUUID();
+
     const newTask = {
-        id: crypto.randomUUID(),
+        id: newTaskId,
         title: taskTitle,
         description: taskDescr,
         dueDate: taskDueDate,
-        status: 'to-do'
+        status: 'to-do',
     }
 
     const tasks = readTasksFromStorage();
     tasks.push(newTask);
 
-    saveTaskstoStorage(tasks);
-    renderTaskList();
+    saveTasksToStorage(tasks);
+    renderTasks();
 
-    taskTitleEl.val('');
-    taskDescrEl.val('');
-    taskDueDateEl.val('');
+    taskTitleInputEl.val('');
+    taskDescrInputEl.val('');
+    taskDueDateInputEl.val('');
 }
 
-function handleDeleteTask(event){
+function handleDeleteTask() {
     const taskId = $(this).attr('data-task-id');
     const tasks = readTasksFromStorage();
-
+    
     tasks.forEach((task) => {
         if (task.id === taskId) {
             tasks.splice(tasks.indexOf(task), 1)
         }
     });
 
-    saveTaskstoStorage(tasks);
+    saveTasksToStorage(tasks);
 
-    renderTaskList();
+    renderTasks();
 }
 
 function handleDrop(event, ui) {
     const tasks = readTasksFromStorage();
     const taskId = ui.draggable[0].dataset.taskId;
-    const newStatus = event.target.id;
+    // console.log(event.target)
+    const newStatus = event.target.id
 
     for (let task of tasks) {
         if (task.id === taskId) {
@@ -131,30 +148,13 @@ function handleDrop(event, ui) {
     }
     
     localStorage.setItem('tasks', JSON.stringify(tasks));
-    renderTaskList();
+    renderTasks();
 }
 
-saveTaskButton.addEventListener('click', handleAddTask);
-
-addTaskButton.addEventListener('click', () => {
-    taskModal.style.display = 'block';
-})
-
-closeButton.addEventListener('click', () => {
-    taskModal.style.display = 'none';
-})
-
-closeButtonX.addEventListener('click', () => {
-    taskModal.style.display = 'none';
-})
-
-$(document).ready(function () {
-    renderTaskList();
+$(document).ready(function() {
+    renderTasks();
     
-    $('#inputDueDate').datepicker({
-        changeMonth: true,
-        changeYear: true,
-    });
+    saveTaskBtn.on('click', handleTaskSubmit);
 
     $('.lane').droppable({
         accept: '.draggable',
